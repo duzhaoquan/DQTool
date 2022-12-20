@@ -216,3 +216,165 @@ public extension Sequence where Element: Equatable {
     }
     
 }
+
+public extension Double {
+   
+    
+    mutating func roundTo(decimals: Int = 2) -> Double {
+        
+        let c = "\(Int(self))".count
+        var v = 18 - c
+        if v < decimals {
+            return self
+        } else if v > 8 {
+            v = 8
+        }
+        
+        let t = pow(10.0, Double(v))
+        
+        var str: String = "\(Int((self * t).rounded()))"
+
+        var number = Int(str)! / Int(pow(10.0, Double(v-decimals-1)))
+        str = "\(number)"
+
+        guard str.count > 0 else { return 0 }
+        
+        guard let dNumber = Int(str.suffix(1)) else {
+            return 0
+        }
+        
+        if dNumber > 4 {
+            number = number + 10 - dNumber
+        } else {
+            number = number - dNumber
+        }
+        
+        self = Double(number) / pow(10.0, Double(decimals+1))
+        return self
+    }
+ 
+    
+    func round2To(decimals: Int = 2) -> Double {
+        var s: Double = (self * 100000000).rounded()
+        s = s / 100000000
+        
+        s = (s * pow(10.0, Double(decimals))).rounded()
+        s = s / pow(10.0, Double(decimals))
+        
+        return s == 0 ? 0 : s
+    }
+
+    
+    
+    mutating func doubleToString() -> String {
+        
+        var value = self
+        
+        var aa = value.roundTo(decimals: 6)
+
+        let intValue = Int(aa)
+        aa = aa - Double(intValue)
+        aa = aa * 100000
+        aa = aa.roundTo()
+        
+        if Int(aa) % 10 != 0 && aa > 0.0
+        {
+            return String(format:"%0.5f",self)
+        }
+        else if Int(aa) % 100 != 0 && aa > 0.0
+        {
+            return String(format:"%0.4f",self)
+        }
+        else if Int(aa) % 1000 != 0 && aa > 0.0
+        {
+            return String(format:"%0.3f",self)
+        }
+        else if Int(aa) % 10000 != 0 && aa > 0.0
+        {
+            return String(format:"%0.2f",self)
+        }
+        else if Double(Int(self))  == self && Int(self) > 0
+        {
+            return String(format:"%d",Int(self))
+        }
+        else
+        {
+            return String(format:"%0.1f",self)
+        }
+    }
+    
+    /**
+     转换为带本地货币符号的字符串
+     
+     - returns: 带货币符号的字符串 例如： $12.34
+     */
+    func toCurrencyString() -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = NumberFormatter.Style.currency
+        
+        guard let returnStr = formatter.string(from: NSNumber(value: self)) else {
+            return ""
+        }
+        
+        //货币符号是一些少见的小国家时，输入的值很小，会直接会返回0，这种情况直接返回不带货币符号的原始输入值
+        let str0 = formatter.string(from: NSNumber(value: 0))
+        if let str1 = str0?.components(separatedBy: ".").first {
+            if !str1.hasPrefix("CN") && !str1.hasPrefix("US") && str1.count >= 4 {  //$0.00,AMD0
+                return String(format: "%.2f", self.round2To())
+            }
+        }
+        return returnStr
+    }
+    
+    func toCurrency4String() -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = NumberFormatter.Style.currency
+        
+        let returnStr = formatter.currencySymbol + String(format: "%.4f", self)
+        
+        //货币符号是一些少见的小国家时，输入的值很小，会直接会返回0，这种情况直接返回不带货币符号的原始输入值
+        let str0 = formatter.string(from: NSNumber(value: 0))
+        if let str1 = str0?.components(separatedBy: ".").first {
+            if !str1.hasPrefix("CN") && !str1.hasPrefix("US") && str1.count >= 4 {  //$0.00,AMD0
+                return String(format: "%.4f", self)
+            }
+        }
+        return returnStr
+    }
+    
+}
+
+public extension Int {
+    func sectionString() -> String{
+        guard self > 999 else {
+            return "\(self)"
+        }
+        var str = ""
+        var number  = self
+        while number > 0  {
+            let n = number % 1000
+            number = number / 1000
+            
+            var stemp = "\(n)"
+            
+            if number > 0 {
+                if n < 10 {
+                    stemp = "00" + stemp
+                }else if n < 100{
+                    stemp = "0" + stemp
+                }
+            }
+            
+            if str.isEmpty {
+                str = stemp
+            }else{
+                str = stemp + "," + str
+            }
+            
+            
+        }
+        
+        return str
+        
+    }
+}
