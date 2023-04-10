@@ -36,7 +36,7 @@ import UIKit
   }
   
  */
-
+//刷新状态机
 enum DQRefreshState {
     case idle,refeshing,loading,noMoreData
 }
@@ -163,7 +163,7 @@ class DQRefreshTool: UIRefreshControl {
     }
     
 }
-
+//ScrollView add function
 extension  UIScrollView {
     func setDQRfreshState(_ state: DQRefreshState){
         guard  let control = self.refreshControl as? DQRefreshTool else {
