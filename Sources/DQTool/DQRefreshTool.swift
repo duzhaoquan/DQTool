@@ -185,6 +185,7 @@ protocol DQRefreshViewProtocol: UIView {
     func endRefreshing(isSucceed:Bool)
     
 }
+//自定义刷新视图
 class DQRefreshView: UIView,DQRefreshViewProtocol{
     func endRefreshing(isSucceed:Bool) {
         activityView.layer.removeAllAnimations()
