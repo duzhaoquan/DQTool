@@ -180,7 +180,7 @@ public extension UIView {
 private weak var currentFirstResponder: AnyObject?
 
 public extension UIResponder {
-    
+    //get first Responder
     static func firstResponder() -> AnyObject? {
         currentFirstResponder = nil
         // 通过将target设置为nil，让系统自动遍历响应链
